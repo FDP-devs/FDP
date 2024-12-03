@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "esnext", // 최신 ECMAScript 기능 사용
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": false, // JavaScript 파일 허용 안 함
     "skipLibCheck": true,
     "strict": true, // 엄격한 타입 검사
@@ -21,7 +25,15 @@
     "strictNullChecks": true, // null 및 undefined에 대한 엄격한 검사
     "strictFunctionTypes": true, // 함수 타입에 대한 엄격한 검사
     "strictBindCallApply": true // bind, call, apply에 대한 엄격한 검사
+    ,
+    "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
