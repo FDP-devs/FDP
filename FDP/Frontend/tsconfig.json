@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "esnext", // 최신 ECMAScript 기능 사용
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": false, // JavaScript 파일 허용 안 함
+    "skipLibCheck": true,
+    "strict": true, // 엄격한 타입 검사
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "noImplicitAny": true, // 암시적 any 타입 금지
+    "noImplicitReturns": true, // 함수에서 모든 경로가 값을 반환해야 함
+    "noImplicitThis": true, // 암시적 this 타입 금지
+    "noUnusedLocals": true, // 사용하지 않는 지역 변수 금지
+    "noUnusedParameters": true, // 사용하지 않는 매개변수 금지
+    "strictNullChecks": true, // null 및 undefined에 대한 엄격한 검사
+    "strictFunctionTypes": true, // 함수 타입에 대한 엄격한 검사
+    "strictBindCallApply": true // bind, call, apply에 대한 엄격한 검사
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}
