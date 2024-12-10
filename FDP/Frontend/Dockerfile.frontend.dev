@@ -1,0 +1,20 @@
+# Use the specific Node.js version 23.0.1 as a base
+FROM node:23.0.1
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and yarn.lock
+COPY package.json yarn.lock ./
+
+# Install dependencies
+RUN yarn install
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose the application port
+EXPOSE 3000
+
+# Start the application in development mode
+CMD ["yarn", "dev"]

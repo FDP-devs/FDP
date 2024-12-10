@@ -1,0 +1,48 @@
+services:
+  fdp-db:
+    image: postgres:latest
+    container_name: fdp-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - fdp_db_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    networks:
+      - fdp_network
+
+  # fdp-back:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile.backend.dev
+  #   container_name: fdp-back
+  #   ports:
+  #     - "${BACKEND_PORT}:3000"  # Use environment variable for port
+  #   networks:
+  #     - fdp_network
+  #   depends_on:
+  #     - fdp-db
+  #   environment:
+  #     DATABASE_HOST: fdp-db
+  #     DATABASE_PORT: 5432
+  #     DATABASE_USER: ${POSTGRES_USER}
+  #     DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+  #     DATABASE_NAME: ${POSTGRES_DB}
+
+  # fdp-front:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile.frontend.dev
+  #   container_name: fdp-front
+  #   ports:
+  #     - "${FRONTEND_PORT}:3000"  # Use environment variable for port
+  #   networks:
+  #     - fdp_network
+
+volumes:
+  fdp_db_data:
+
+networks:
+  fdp_network:
