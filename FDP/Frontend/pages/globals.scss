@@ -1,3 +1,106 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    @apply text-[--color-text];
+  }
+}
+// Primary Colors
+:root {
+  --color-primary: #00e5cc; // 메인 배경 네이비
+  --color-secondary: #ff3b7b; // 핑크색 강조색상
+  --color-error: #ff6b6b; // 빨간색 상태 표시
+  --color-background: #161f37; // 메인 배경 네이비
+  --color-background-secondary: #1e2a4a; // 카드 배경색
+
+  // Secondary Colors
+  --color-gray: #242c44; // 어두운 회색 배경
+
+  // Text Colors
+  --color-text: #ffffff; // 흰색 주요 텍스트
+  --color-text-secondary: #8792a8; // 회색빛 부가 텍스트
+  --color-text-light: #a0aec0; // 밝은 회색 텍스트
+
+  // UI Elements
+  --color-press: #00e5cc; // 초록색 상태 표시
+  --color-border: #2a365a; // 어두운 테두리색
+}
+
+.btn {
+  padding: 0 14px;
+  height: 34px;
+  font-size: 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  background-color: var(--color-gray);
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-32 {
+  @apply w-32;
+}
+
+.btn-28 {
+  @apply w-28;
+}
+
+.btn-24 {
+  @apply w-24;
+}
+
+.bg-primary {
+  @apply bg-[--color-background];
+}
+
+.bg-secondary {
+  @apply bg-[--color-background-secondary];
+}
+
+@keyframes neonFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+body {
+  background: linear-gradient(
+    45deg,
+    var(--color-background) 0%,
+    var(--color-background-secondary) 25%,
+    var(--color-primary) 50%,
+    var(--color-background-secondary) 75%,
+    var(--color-background) 100%
+  );
+  background-size: 400% 400%;
+  animation: neonFlow 15s ease infinite;
+  min-height: 100vh;
+
+  // 네온 글로우 효과
+  &::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    filter: blur(50px);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: -1;
+  }
+}
