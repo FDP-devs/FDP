@@ -25,6 +25,9 @@ export class Member {
   })
   role!: string;
 
+  @Column({ default: false })
+  isEmailVerified!: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date;
 
