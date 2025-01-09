@@ -1,6 +1,8 @@
 import React from 'react';
+import { useModalContext } from '../contexts/ModalContext';
 
 export default function LandingPage() {
+  const { openModal } = useModalContext();
   return (
     <main className="neon-container h-screen w-screen overflow-hidden">
       <article className="flex w-full h-full flex-col items-center justify-center px-4">
@@ -11,7 +13,10 @@ export default function LandingPage() {
           <p className="mb-10 text-xl text-[--color-text-primary]">
             프론트엔드 배포 플랫폼을 더 스마트하게
           </p>
-          <button className="rounded-lg bg-[--color-primary] px-8 py-3 text-white transition-all hover:opacity-90 drop-shadow-lg">
+          <button
+            className="btn btn-32 text-lg btn-primary px-8 py-3  transition-all hover:opacity-90 drop-shadow-lg"
+            onClick={() => openModal('LoginModal')}
+          >
             시작하기
           </button>
         </section>
