@@ -27,12 +27,13 @@ export class Project {
   @Column({ type: 'varchar', nullable: true })
   deployLink?: string;
 
-  @Column({
-    type: 'geography',
-    spatialFeatureType: 'Point',
-    srid: 4326,
-    nullable: true,
-  })
+  // @Column({
+  //   type: 'geography',
+  //   spatialFeatureType: 'Point',
+  //   srid: 4326,
+  //   nullable: true,
+  // })
+  @Column({ type: 'point', nullable: true })
   location?: string;
 
   @ManyToOne(() => Member, { nullable: true })
