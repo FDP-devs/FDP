@@ -1,4 +1,10 @@
-import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  BadRequestException,
+  HttpCode,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SendVerificationEmailDto } from '../email/dto/send-verification-email.dto';
 import { VerifyEmailDto } from '../email/dto/verify-email.dto';
@@ -8,6 +14,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('verifications')
+  @HttpCode(201)
   async sendVerificationEmail(@Body() dto: SendVerificationEmailDto) {
     try {
       await this.authService.sendVerificationEmail(dto.email);
@@ -18,6 +25,7 @@ export class AuthController {
   }
 
   @Post('verifications/confirm')
+  @HttpCode(200)
   async verifyEmail(@Body() dto: VerifyEmailDto) {
     try {
       await this.authService.verifyEmail(dto.email, dto.verificationCode);
