@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailerService } from '@nestjs-modules/mailer';
-import { EmailService } from './email.service';
+import { EmailService } from '../../src/domain/email/email.service';
 import { BadRequestException } from '@nestjs/common';
 
 describe('EmailService', () => {
