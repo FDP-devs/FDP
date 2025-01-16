@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailService } from './email.service';
+import { EmailController } from './email.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { EmailVerification } from './email-verification.entity';
 
 @Module({
   imports: [
     ConfigModule,
+    TypeOrmModule.forFeature([EmailVerification]),
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -16,7 +20,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           transport: {
             service: 'gmail',
             host: configService.get('SMTP_HOST'),
-            // secure: true 일 때는 포트가 명시적으로 정해져있음
             port: configService.get('SMTP_PORT'),
             secure: true,
             auth: {
@@ -32,6 +35,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
   providers: [EmailService],
+  controllers: [EmailController],
   exports: [EmailService],
 })
 export class EmailModule {}

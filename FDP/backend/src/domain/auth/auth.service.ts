@@ -24,10 +24,7 @@ export class AuthService {
       };
 
       await this.emailVerificationRepository.save(verificationData);
-      await this.emailService.sendVerificationEmail(
-        verificationData.email,
-        verificationData.verificationCode
-      );
+      await this.emailService.sendVerificationEmail(verificationData.email);
 
       return {
         message: '인증 코드가 이메일로 전송되었습니다.',

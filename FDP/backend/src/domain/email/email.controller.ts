@@ -8,21 +8,17 @@ export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
   @Post('verification/send')
-  async sendVerificationEmail(
-    @Body() sendVerificationEmailDto: SendVerificationEmailDto
-  ) {
-    await this.emailService.sendVerificationEmail(
-      sendVerificationEmailDto.email
-    );
+  async sendVerificationEmail(@Body() dto: SendVerificationEmailDto) {
+    await this.emailService.sendVerificationEmail(dto.email);
     return { message: '인증 메일이 발송되었습니다.' };
   }
 
   @Post('verification/verify')
-  async verifyEmail(@Body() verifyEmailDto: VerifyEmailDto) {
-    const isVerified = await this.emailService.verifyEmail(
-      verifyEmailDto.email,
-      verifyEmailDto.verificationCode
+  async verifyEmail(@Body() dto: VerifyEmailDto) {
+    const verified = await this.emailService.verifyEmail(
+      dto.email,
+      dto.verificationCode
     );
-    return { verified: isVerified };
+    return { verified };
   }
 }
