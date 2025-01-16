@@ -16,6 +16,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           transport: {
             service: 'gmail',
             host: configService.get('SMTP_HOST'),
+            // secure: true 일 때는 포트가 명시적으로 정해져있음
             port: configService.get('SMTP_PORT'),
             secure: true,
             auth: {
