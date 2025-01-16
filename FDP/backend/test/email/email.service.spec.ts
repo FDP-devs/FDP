@@ -2,10 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MailerService } from '@nestjs-modules/mailer';
 import { EmailService } from '../../src/domain/email/email.service';
 import { BadRequestException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 describe('EmailService', () => {
   let service: EmailService;
   let mailerService: MailerService;
+  let configService: ConfigService;
 
   beforeEach(async () => {
     // Given: 테스트 환경 설정
@@ -20,17 +22,19 @@ describe('EmailService', () => {
           provide: MailerService,
           useValue: mockMailerService,
         },
+        ConfigService,
       ],
     }).compile();
 
     service = module.get<EmailService>(EmailService);
     mailerService = module.get<MailerService>(MailerService);
+    configService = module.get<ConfigService>(ConfigService);
   });
 
   describe('sendVerificationEmail', () => {
     it('should send verification email successfully', async () => {
-      // Given: 테스트에 필요한 데이터 준비
-      const email = 'test@example.com';
+      // Given: ConfigService에서 이메일 주소 가져오기
+      const email: string = configService.get<string>('SMTP_TO_EMAIL')!;
       const code = '123456';
 
       // When: 이메일 발송 실행
@@ -47,7 +51,7 @@ describe('EmailService', () => {
 
     it('should throw BadRequestException when email sending fails', async () => {
       // Given: 실패 상황 설정
-      const email = 'test@example.com';
+      const email: string = configService.get<string>('SMTP_TO_EMAIL')!;
       const code = '123456';
       const errorMessage = 'SMTP connection failed';
       jest
@@ -62,7 +66,7 @@ describe('EmailService', () => {
 
     it('should handle various email sending errors appropriately', async () => {
       // Given: 다양한 에러 케이스 준비
-      const email = 'test@example.com';
+      const email: string = configService.get<string>('SMTP_TO_EMAIL')!;
       const code = '123456';
       const errorCases = [
         {
