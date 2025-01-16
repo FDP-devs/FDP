@@ -3,7 +3,7 @@ import { EmailService } from './email.service';
 import { SendVerificationEmailDto } from './dto/send-verification-email.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 
-@Controller('email')
+@Controller('api/v1/email')
 export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
