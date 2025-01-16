@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class EmailService {
+  private readonly logger = new Logger(EmailService.name);
   constructor(private mailerService: MailerService) {}
 
   async sendVerificationEmail(email: string, verificationCode: string) {
@@ -17,7 +18,16 @@ export class EmailService {
             <p>10분 동안 유효합니다.</p>
           `,
       });
-    } catch (error) {
+    } catch (error: any) {
+      this.logger.error('SMTP Error Details:', {
+        error: error.message,
+        code: error.code,
+        command: error.command,
+        responseCode: error.responseCode,
+        response: error.response,
+        stack: error.stack,
+      });
+
       throw new BadRequestException('이메일 전송에 실패했습니다.');
     }
   }
