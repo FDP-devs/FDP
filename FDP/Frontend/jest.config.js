@@ -1,8 +1,12 @@
-// frontend/jest.config.js
-const baseConfig = require('../jest.config.base');
-
 module.exports = {
-  ...baseConfig,
-  testEnvironment: 'jsdom', // 브라우저 환경을 위한 설정
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'], // 테스트 환경 설정 파일
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1',
+    '^@components/(.*)$': '<rootDir>/components/$1'
+  },
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+  },
+  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)']
 };

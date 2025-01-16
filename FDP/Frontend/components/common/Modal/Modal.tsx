@@ -9,6 +9,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
       <div
         className="fixed inset-0 backdrop-blur-sm bg-black/30"
         onClick={onClose}
+        data-testid="modal-backdrop"
       />
 
       {/* 모달 컨테이너 */}
