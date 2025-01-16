@@ -16,12 +16,25 @@
   "scripts": {
     "dev": "next build && next dev",
     "build": "next build",
-    "start": "next build && next start"
+    "start": "next build && next start",
+    "test": "jest"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.0.1",
-    "@types/react-dom": "^19.0.2",
-    "install": "^0.13.0"
+    "@babel/preset-env": "^7.22.0",
+    "@babel/preset-react": "^7.22.0",
+    "@babel/preset-typescript": "^7.22.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@types/jest": "^29.5.11",
+    "babel-jest": "^29.7.0",
+    "jest": "^27.5.1",
+    "jest-environment-jsdom": "^27.5.1",
+    "string-width": "4.2.3",
+    "strip-ansi": "6.0.1",
+    "ts-jest": "^27.1.5"
+  },
+  "resolutions": {
+    "string-width": "4.2.3",
+    "strip-ansi": "6.0.1"
   }
 }
