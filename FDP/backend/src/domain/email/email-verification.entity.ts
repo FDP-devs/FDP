@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity('email_verifications')
@@ -21,4 +22,7 @@ export class EmailVerification {
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date;
+
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deletedAt?: Date;
 }
