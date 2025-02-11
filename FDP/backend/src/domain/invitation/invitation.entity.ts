@@ -14,8 +14,8 @@ export class Invitation {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ type: 'varchar' })
-  inviteLink!: string;
+  @Column({ type: 'varchar', unique: true })
+  inviteCode!: string;
 
   @Column({ type: 'timestamp' })
   expiration!: Date;
@@ -25,6 +25,9 @@ export class Invitation {
     nullable: true,
   })
   group!: Group;
+
+  @Column({ type: 'boolean', default: true })
+  isActive!: boolean;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date;
