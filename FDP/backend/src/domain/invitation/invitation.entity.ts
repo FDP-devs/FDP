@@ -18,7 +18,7 @@ export class Invitation {
   inviteCode!: string;
 
   @Column({ type: 'timestamp' })
-  expiration!: Date;
+  expiresAt!: Date;
 
   @ManyToOne(() => Group, {
     onDelete: 'SET NULL',
@@ -28,6 +28,9 @@ export class Invitation {
 
   @Column({ type: 'boolean', default: true })
   isActive!: boolean;
+
+  @Column()
+  createdById!: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date;
