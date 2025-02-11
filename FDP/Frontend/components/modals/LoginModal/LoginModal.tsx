@@ -1,8 +1,16 @@
 // LoginModal에서 Modal 컴포넌트 사용
 import { Modal } from '@components/common/Modal';
 import { ModalProps } from '@/types/modal';
+import { useRouter } from 'next/router';
 
 export default function LoginModal({ isOpen, onClose }: ModalProps) {
+  const router = useRouter();
+
+  const handleSignupClick = () => {
+    onClose();
+    router.push('/signup');
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="w-[400px] p-6">
@@ -74,6 +82,7 @@ export default function LoginModal({ isOpen, onClose }: ModalProps) {
               <button
                 type="button"
                 className="text-[--color-secondary] hover:underline"
+                onClick={handleSignupClick}
               >
                 회원가입
               </button>
