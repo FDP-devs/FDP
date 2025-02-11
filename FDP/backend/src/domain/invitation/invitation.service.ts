@@ -79,8 +79,7 @@ export class InvitationService {
     });
 
     if (invitation) {
-      invitation.deletedAt = new Date();
-      await this.invitationRepository.save(invitation);
+      await this.invitationRepository.softDelete({ id: invitation.id });
     }
   }
 
