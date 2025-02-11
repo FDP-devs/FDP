@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './domain/auth/auth.module';
 import { EmailModule } from './domain/email/email.module';
+import { InvitationModule } from './domain/invitation/invitation.module';
 import * as path from 'path';
 
 @Module({
@@ -40,6 +41,7 @@ import * as path from 'path';
     }),
     AuthModule,
     EmailModule,
+    InvitationModule,
   ],
   controllers: [],
   providers: [],
