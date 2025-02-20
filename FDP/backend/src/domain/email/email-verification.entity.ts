@@ -5,6 +5,11 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 
+export enum VerificationType {
+  SIGNUP = 'SIGNUP',
+  PW_RESET = 'PW_RESET',
+}
+
 @Entity('email_verifications')
 export class EmailVerification {
   @PrimaryGeneratedColumn('uuid')
@@ -15,6 +20,12 @@ export class EmailVerification {
 
   @Column({ type: 'varchar' })
   verificationCode!: string;
+
+  @Column({
+    type: 'enum',
+    enum: VerificationType,
+  })
+  type!: VerificationType;
 
   @Column({ type: 'timestamp' })
   expiresAt!: Date;
