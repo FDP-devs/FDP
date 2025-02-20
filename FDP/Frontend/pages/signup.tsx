@@ -3,13 +3,11 @@ import React, { useState } from 'react';
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setIsLoading(true);
 
     try {
-      // TODO: API 호출 로직 추가
-      await new Promise(resolve => setTimeout(resolve, 2000)); // 임시 딜레이
+      await new Promise(resolve => setTimeout(resolve, 2000));
     } finally {
       setIsLoading(false);
     }
@@ -48,7 +46,10 @@ export default function SignupPage() {
             {isLoading ? (
               <>
                 <span className="opacity-0">인증번호 발송</span>
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div
+                  className="absolute inset-0 flex items-center justify-center"
+                  data-testid="loading-spinner"
+                >
                   <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
                 </div>
               </>
