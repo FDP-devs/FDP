@@ -3,64 +3,55 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EmailService } from '../email/email.service';
 import { Member } from '../member/member.entity';
-import { EmailVerification } from '../email/email-verification.entity';
-import { IEmailVerification, IVerificationResult } from './interfaces';
+import { VerificationType } from '../email/email-verification.entity';
+import { IVerificationResult } from './interfaces';
+
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(Member)
     private memberRepository: Repository<Member>,
-    @InjectRepository(EmailVerification)
-    private emailVerificationRepository: Repository<EmailVerification>,
     private emailService: EmailService
   ) {}
 
-  async sendVerificationEmail(email: string): Promise<IVerificationResult> {
+  async sendVerificationEmail(
+    email: string,
+    type: VerificationType
+  ): Promise<IVerificationResult> {
     try {
-      const verificationData: IEmailVerification = {
-        email,
-        verificationCode: this.generateVerificationCode(),
-        expiresAt: this.calculateExpiryTime(),
-      };
-
-      await this.emailVerificationRepository.save(verificationData);
-      await this.emailService.sendVerificationEmail(
-        verificationData.email,
-        verificationData.verificationCode
-      );
-
-      return {
-        message: '인증 코드가 이메일로 전송되었습니다.',
-      };
+      const result = await this.emailService.sendVerificationEmail(email, type);
+      return result;
     } catch (error) {
       throw new BadRequestException('이메일 전송에 실패했습니다.');
     }
   }
 
-  async verifyEmail(email: string, code: string): Promise<IVerificationResult> {
-    const verification = await this.emailVerificationRepository.findOne({
-      where: { email, verificationCode: code },
-    });
+  async verifyEmail(
+    email: string,
+    code: string,
+    type: VerificationType
+  ): Promise<IVerificationResult> {
+    // 1. 이메일 인증 검증
+    const result = await this.emailService.verifyEmail(email, code, type);
 
-    if (!verification || verification.expiresAt < new Date()) {
-      throw new BadRequestException('유효하지 않거나 만료된 인증 코드입니다.');
+    if (type === VerificationType.SIGNUP) {
+      // 2. 회원 존재 여부 확인
+      const member = await this.memberRepository.findOne({
+        where: { email },
+      });
+
+      if (!member) {
+        throw new BadRequestException('가입되지 않은 이메일입니다.');
+      }
+
+      if (member.isEmailVerified) {
+        throw new BadRequestException('이미 인증된 이메일입니다.');
+      }
+
+      // 3. 이메일 인증 상태 업데이트
+      await this.memberRepository.update({ email }, { isEmailVerified: true });
     }
 
-    await this.memberRepository.update({ email }, { isEmailVerified: true });
-    await this.emailVerificationRepository.remove(verification);
-
-    return {
-      message: '이메일이 성공적으로 인증되었습니다.',
-    };
-  }
-
-  private generateVerificationCode(): string {
-    return Math.random().toString(36).substring(2, 8);
-  }
-
-  private calculateExpiryTime(): Date {
-    const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 10);
-    return expiresAt;
+    return result;
   }
 }
