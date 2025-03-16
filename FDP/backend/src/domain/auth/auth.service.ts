@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   ConflictException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,6 +12,7 @@ import { Member } from '../member/member.entity';
 import { VerificationType } from '../email/email-verification.entity';
 import { IVerificationResult } from './interfaces';
 import { SignupDto } from './dto/signup.dto';
+import { SigninDto } from './dto/signin.dto';
 
 @Injectable()
 export class AuthService {
@@ -103,5 +105,35 @@ export class AuthService {
     }
 
     return result;
+  }
+
+  // 현재 JWT 관련 로직은 따로 구현해야 함.
+  async signin(signinDto: SigninDto) {
+    // 1. 이메일로 회원 찾기
+    const member = await this.memberRepository.findOne({
+      where: { email: signinDto.email },
+    });
+
+    if (!member) {
+      throw new UnauthorizedException(
+        '이메일 또는 비밀번호가 일치하지 않습니다.'
+      );
+    }
+
+    // 2. 비밀번호 확인
+    const isPasswordValid = await bcrypt.compare(
+      signinDto.password,
+      member.password
+    );
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException(
+        '이메일 또는 비밀번호가 일치하지 않습니다.'
+      );
+    }
+
+    // 3. 비밀번호 제외하고 반환
+    const { password, ...memberWithoutPassword } = member;
+    return memberWithoutPassword;
   }
 }
