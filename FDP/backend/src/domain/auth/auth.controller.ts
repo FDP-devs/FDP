@@ -6,9 +6,11 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
+import { SigninDto } from './dto/signin.dto';
 import { SendVerificationEmailDto } from '../email/dto/send-verification-email.dto';
 import { VerifyEmailDto } from '../email/dto/verify-email.dto';
 import { VerificationType } from '../email/email-verification.entity';
@@ -24,6 +26,16 @@ export class AuthController {
     return {
       message: '회원가입이 완료되었습니다. 이메일 인증을 진행해주세요.',
       data: member,
+    };
+  }
+
+  @Post('signin')
+  @HttpCode(HttpStatus.OK)
+  async signin(@Body() signinDto: SigninDto) {
+    const result = await this.authService.signin(signinDto);
+    return {
+      message: '로그인이 완료되었습니다.',
+      data: result,
     };
   }
 
@@ -59,7 +71,7 @@ export class AuthController {
   ) {
     const result = await this.authService.verifyEmail(
       dto.email,
-      dto.verificationCode, // VerifyEmailDto의 필드명과 일치
+      dto.verificationCode,
       type
     );
 
