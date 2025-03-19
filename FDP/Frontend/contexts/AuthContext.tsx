@@ -8,7 +8,7 @@ import React, {
 import { useRouter } from 'next/router';
 import { AuthService } from '../services/authService';
 import { TokenService } from '../services/tokenService';
-import { User, AuthState } from '../types/auth';
+import { AuthState } from '../types/auth';
 
 // 인증 컨텍스트 타입 정의
 interface AuthContextType extends AuthState {
@@ -93,10 +93,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   // 회원가입
-  const register = async (email: string, password: string, name: string) => {
+  const register = async (email: string, password: string) => {
     try {
       setAuthState(prev => ({ ...prev, loading: true, error: null }));
-      await AuthService.register({ email, password, name });
+      await AuthService.register({ email, password });
       // 회원가입 후 자동 로그인
       await login(email, password);
     } catch (error: any) {
