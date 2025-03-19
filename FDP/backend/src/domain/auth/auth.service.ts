@@ -80,7 +80,7 @@ export class AuthService {
 
   async verifyEmail(
     email: string,
-    code: string,
+    verificationCode: string,
     type: VerificationType
   ): Promise<IVerificationResult> {
     const member = await this.memberRepository.findOne({
@@ -95,7 +95,11 @@ export class AuthService {
       throw new BadRequestException('이미 인증된 이메일입니다.');
     }
 
-    const result = await this.emailService.verifyEmail(email, code, type);
+    const result = await this.emailService.verifyEmail(
+      email,
+      verificationCode,
+      type
+    );
 
     if (type === VerificationType.SIGNUP) {
       await this.memberRepository.update(
