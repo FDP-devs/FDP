@@ -32,6 +32,7 @@ export class EmailVerification {
   @Column({
     type: 'enum',
     enum: VerificationType,
+    default: VerificationType.SIGNUP,
   })
   type!: VerificationType;
 
