@@ -43,10 +43,7 @@ export class AuthController {
     @Body() dto: SendVerificationEmailDto,
     @Query('type') type: VerificationType = VerificationType.SIGNUP
   ) {
-    const result = await this.authService.sendVerificationEmail(
-      dto.email,
-      type
-    );
+    await this.authService.sendVerificationEmail(dto.email, type);
 
     const messages = {
       [VerificationType.SIGNUP]:
@@ -57,7 +54,6 @@ export class AuthController {
 
     return {
       message: messages[type] || '인증 코드가 이메일로 전송되었습니다.',
-      data: result,
     };
   }
 
