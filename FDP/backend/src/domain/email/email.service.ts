@@ -63,6 +63,7 @@ export class EmailService {
           `,
         });
       } catch (emailError) {
+        console.error('이메일 전송 실패 상세 정보:', emailError);
         await this.emailVerificationRepository.update(
           { id: savedVerification.id },
           { status: VerificationStatus.FAILED }
