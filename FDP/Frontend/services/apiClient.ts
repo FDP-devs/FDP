@@ -3,7 +3,7 @@ import TokenService from './tokenService';
 
 // API 기본 설정
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333/api/v1';
 
 // API 요청 타입
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -13,6 +13,17 @@ export interface RequestOptions {
   headers?: Record<string, string>;
   body?: any;
   requiresAuth?: boolean;
+}
+
+// API 응답 타입
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: {
+    message: string;
+    status?: number;
+    details?: any;
+  };
 }
 
 // API 클라이언트 클래스
@@ -28,7 +39,7 @@ class ApiClient {
   private async request<T>(
     endpoint: string,
     options: RequestOptions = {}
-  ): Promise<T> {
+  ): Promise<ApiResponse<T>> {
     const { method = 'GET', headers = {}, body, requiresAuth = true } = options;
 
     // 요청 헤더 설정
@@ -45,7 +56,7 @@ class ApiClient {
       }
     }
 
-    // 요청 옵션 설정ß
+    // 요청 옵션 설정
     const requestOptions: RequestInit = {
       method,
       headers: requestHeaders,
@@ -65,32 +76,59 @@ class ApiClient {
 
       // 토큰 만료 처리 (401 에러)
       if (response.status === 401 && requiresAuth) {
-        const refreshedResponse = await this.handleTokenRefresh<T>(
-          endpoint,
-          options
-        );
-        return refreshedResponse;
+        try {
+          const refreshedResponse = await this.handleTokenRefresh<T>(
+            endpoint,
+            options
+          );
+          return refreshedResponse;
+        } catch (tokenError: any) {
+          return {
+            success: false,
+            error: {
+              message: tokenError.message || '인증 오류가 발생했습니다.',
+              status: 401,
+            },
+          };
+        }
       }
 
       // 응답 처리
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.message || `API 요청 실패: ${response.status}`
-        );
+        return {
+          success: false,
+          error: {
+            message: errorData.message || `API 요청 실패: ${response.status}`,
+            status: response.status,
+            details: errorData,
+          },
+        };
       }
 
       // 응답이 비어있는 경우 (204 No Content)
       if (response.status === 204) {
-        return {} as T;
+        return {
+          success: true,
+          data: {} as T,
+        };
       }
 
       // JSON 응답 반환
       const data = await response.json();
-      return data as T;
-    } catch (error) {
+      return {
+        success: true,
+        data: data as T,
+      };
+    } catch (error: any) {
       console.error('API 요청 오류:', error);
-      throw error;
+      return {
+        success: false,
+        error: {
+          message: error.message || '네트워크 오류가 발생했습니다.',
+          details: error,
+        },
+      };
     }
   }
 
@@ -98,7 +136,7 @@ class ApiClient {
   private async handleTokenRefresh<T>(
     endpoint: string,
     options: RequestOptions
-  ): Promise<T> {
+  ): Promise<ApiResponse<T>> {
     try {
       // 이미 진행 중인 토큰 갱신 요청이 있으면 재사용
       if (!this.refreshPromise) {
@@ -106,7 +144,13 @@ class ApiClient {
 
         if (!refreshToken) {
           TokenService.removeTokens();
-          throw new Error('리프레시 토큰이 없습니다. 다시 로그인해주세요.');
+          return {
+            success: false,
+            error: {
+              message: '리프레시 토큰이 없습니다. 다시 로그인해주세요.',
+              status: 401,
+            },
+          };
         }
 
         // 토큰 갱신 요청
@@ -126,10 +170,13 @@ class ApiClient {
       if (!response.ok) {
         // 리프레시 토큰도 만료된 경우
         TokenService.removeTokens();
-        if (typeof window !== 'undefined') {
-          window.location.href = '/login';
-        }
-        throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
+        return {
+          success: false,
+          error: {
+            message: '인증이 만료되었습니다. 다시 로그인해주세요.',
+            status: response.status,
+          },
+        };
       }
 
       // 새 토큰 저장
@@ -141,9 +188,15 @@ class ApiClient {
         ...options,
         requiresAuth: true,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('토큰 갱신 오류:', error);
-      throw error;
+      return {
+        success: false,
+        error: {
+          message: error.message || '토큰 갱신 중 오류가 발생했습니다.',
+          details: error,
+        },
+      };
     }
   }
 
@@ -151,7 +204,7 @@ class ApiClient {
   public async get<T = any>(
     endpoint: string,
     options: Omit<RequestOptions, 'method' | 'body'> = {}
-  ): Promise<T> {
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...options, method: 'GET' });
   }
 
@@ -159,7 +212,7 @@ class ApiClient {
     endpoint: string,
     data?: any,
     options: Omit<RequestOptions, 'method'> = {}
-  ): Promise<T> {
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       ...options,
       method: 'POST',
@@ -171,14 +224,14 @@ class ApiClient {
     endpoint: string,
     data?: any,
     options: Omit<RequestOptions, 'method'> = {}
-  ): Promise<T> {
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...options, method: 'PUT', body: data });
   }
 
   public async delete<T = any>(
     endpoint: string,
     options: Omit<RequestOptions, 'method'> = {}
-  ): Promise<T> {
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   }
 }
