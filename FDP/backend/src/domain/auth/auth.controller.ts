@@ -67,11 +67,7 @@ export class AuthController {
     @Body() dto: VerifyEmailDto,
     @Query('type') type: VerificationType = VerificationType.SIGNUP
   ) {
-    const result = await this.authService.verifyEmail(
-      dto.email,
-      dto.verificationCode,
-      type
-    );
+    await this.authService.verifyEmail(dto.email, dto.verificationCode, type);
 
     const messages = {
       [VerificationType.SIGNUP]: '이메일 인증이 완료되었습니다.',
@@ -80,7 +76,6 @@ export class AuthController {
 
     return {
       message: messages[type] || '이메일이 성공적으로 인증되었습니다.',
-      data: result,
     };
   }
 }
